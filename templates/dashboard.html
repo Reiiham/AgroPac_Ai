@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — AgroOptimize HdF{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- PAC 2024 -->
+<div class="card mb-4">
+  <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">Aides PAC 2024 par culture</h3>
+  <div class="table-responsive">
+    <table class="table table-agro">
+      <thead>
+        <tr>
+          <th>Culture</th>
+          <th>DPB</th>
+          <th>Éco-régime</th>
+          <th>VBC</th>
+          <th>Total PAC</th>
+          <th>Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c, v in pac_aides.items() %}
+        <tr>
+          <td><span class="badge-culture">{{ noms.get(c, c) }}</span></td>
+          <td>{{ v.dpb }} €/ha</td>
+          <td>{{ v.eco }} €/ha</td>
+          <td style="font-weight:{% if v.vbc > 0 %}600{% else %}400{% endif %};
+                     color:{% if v.vbc > 0 %}var(--vert){% else %}var(--texte-muted){% endif %}">
+            {{ v.vbc }} €/ha
+          </td>
+          <td style="font-weight:600;color:var(--vert)">{{ v.dpb + v.eco + v.vbc }} €/ha</td>
+          <td style="font-size:12px;color:var(--texte-muted)">
+            {% if v.vbc == 130 %}Telepac notice 2024
+            {% elif v.vbc == 104 %}SMAG PAC 2023-2027
+            {% else %}data.gouv.fr + JO 01/10/2024{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Performances modèle -->
+<div class="card">
+  <h3 style="font-size:16px;font-weight:600;margin-bottom:16px">Performances du modèle</h3>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div style="background:var(--vert-pale);border-radius:10px;padding:16px;text-align:center">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;
+                    color:var(--vert);margin-bottom:6px">Meilleur modèle</div>
+        <div style="font-size:22px;font-weight:700;color:var(--vert)">
+          {{ metrics.get('meilleur_modele','XGBoost') }}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div style="background:var(--vert-pale);border-radius:10px;padding:16px;text-align:center">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;
+                    color:var(--vert);margin-bottom:6px">Accuracy</div>
+        <div style="font-size:22px;font-weight:700;color:var(--vert)">
+          {{ "%.1f"|format(metrics.get('accuracy_best',0.575)*100) }}%
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div style="background:var(--vert-pale);border-radius:10px;padding:16px;text-align:center">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;
+                    color:var(--vert);margin-bottom:6px">MAE Revenu</div>
+        <div style="font-size:22px;font-weight:700;color:var(--vert)">
+          {{ metrics.get('mae_revenu_eur_ha',617)|round|int }} €/ha
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

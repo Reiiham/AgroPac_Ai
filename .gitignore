@@ -1,0 +1,10 @@
+.env
+venv/
+__pycache__/
+*.pyc
+database/users.db
+models/*.joblib
+models/*.json
+*.zip
+instance/
+.DS_Store

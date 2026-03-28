@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+{% block title %}Prédiction — AgroOptimize HdF{% endblock %}
+{% block page_title %}Prédiction de culture{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <!-- Formulaire -->
+  <div class="col-lg-5">
+    <div class="card">
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:20px">
+        Caractéristiques de la parcelle
+      </h3>
+      <form id="formPred">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="mb-3">
+          <label class="form-label">Type de sol</label>
+          <select name="sol_type" class="form-select">
+            <option value="limoneux">Limoneux (dominant HdF)</option>
+            <option value="argilo_limoneux">Argilo-limoneux</option>
+            <option value="sablo_limoneux">Sablo-limoneux</option>
+            <option value="argileux_lourd">Argileux lourd</option>
+            <option value="tourbe">Tourbeux</option>
+            <option value="craie">Sol de craie</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Zone géographique</label>
+          <select name="zone_geo" class="form-select">
+            <option value="artois_62">Artois — Pas-de-Calais (62)</option>
+            <option value="littoral_62">Littoral — Côte d'Opale (62)</option>
+            <option value="flandre_nord_59">Flandre — Nord (59)</option>
+            <option value="somme_80">Somme (80)</option>
+            <option value="oise_60">Oise (60)</option>
+            <option value="aisne_02">Aisne (02)</option>
+            <option value="plaine_centrale">Plaine centrale</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Précédent cultural</label>
+          <select name="precedent_cultural" class="form-select">
+            <option value="colza">Colza</option>
+            <option value="ble_tendre">Blé tendre</option>
+            <option value="orge">Orge</option>
+            <option value="mais_grain">Maïs grain</option>
+            <option value="betterave">Betterave</option>
+            <option value="pomme_de_terre">Pomme de terre</option>
+            <option value="prairie">Prairie</option>
+          </select>
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col">
+            <label class="form-label">Surface (ha)</label>
+            <input type="number" name="surf_parc" class="form-control"
+                   value="10" min="0.5" max="500" step="0.5">
+          </div>
+          <div class="col">
+            <label class="form-label">Budget intrants (€/ha)</label>
+            <input type="number" name="budget_intrants_ha" class="form-control"
+                   value="520" min="100" max="2000" step="10">
+          </div>
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col">
+            <label class="form-label">Pluviométrie (mm/an)</label>
+            <input type="number" name="pluie_mm" class="form-control"
+                   value="680" min="300" max="1500" step="10">
+          </div>
+          <div class="col">
+            <label class="form-label">Température moy. (°C)</label>
+            <input type="number" name="temp_moy_c" class="form-control"
+                   value="11.5" min="5" max="20" step="0.1">
+          </div>
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col">
+            <label class="form-label">Jours de gel</label>
+            <input type="number" name="gel_jours" class="form-control"
+                   value="11" min="0" max="100">
+          </div>
+          <div class="col">
+            <label class="form-label">pH sol</label>
+            <input type="number" name="ph_sol_reel" class="form-control"
+                   value="6.8" min="4" max="9" step="0.1">
+          </div>
+        </div>
+
+        <div class="row g-2 mb-4">
+          <div class="col">
+            <label class="form-label">Argile (%)</label>
+            <input type="number" name="argile_pct_sol" class="form-control"
+                   value="18" min="1" max="80" step="1">
+          </div>
+          <div class="col">
+            <label class="form-label">Matières organiques (%)</label>
+            <input type="number" name="mo_sol_reel" class="form-control"
+                   value="2.5" min="0.5" max="10" step="0.1">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-vert w-100 justify-content-center" id="btnPredict">
+          🔮 Lancer la prédiction
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Résultats -->
+  <div class="col-lg-7">
+    <!-- Placeholder -->
+    <div id="placeholder" class="card text-center" style="padding:60px 40px">
+      <div style="font-size:56px;margin-bottom:16px">🌾</div>
+      <h3 style="font-size:18px;font-weight:600;margin-bottom:8px">
+        Remplissez le formulaire
+      </h3>
+      <p style="color:var(--texte-muted);font-size:14px">
+        Le modèle XGBoost analysera les caractéristiques de votre parcelle
+        et recommandera la culture optimale parmi 6 grandes cultures HdF.
+      </p>
+    </div>
+
+    <!-- Résultat (caché au départ) -->
+    <div id="result" style="display:none">
+      <!-- Culture TOP 1 -->
+      <div class="card mb-3" id="card-top1">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font-size:12px;font-weight:600;text-transform:uppercase;
+                        letter-spacing:.5px;color:var(--texte-muted)">Culture recommandée</div>
+            <div id="r-culture" style="font-size:28px;font-weight:600;color:var(--vert)"></div>
+          </div>
+          <div id="r-score-badge" style="font-size:32px;font-weight:700;color:var(--vert)"></div>
+        </div>
+        <div style="font-size:13px;color:var(--texte-muted);margin-bottom:16px">
+          <span id="r-confiance"></span>
+          · Modèle {{ metrics.get('meilleur_modele','XGBoost') }}
+          · Accuracy {{ "%.1f"|format(metrics.get('accuracy_best',0.57)*100) }}%
+        </div>
+
+        <!-- Top 4 -->
+        <div id="r-top4"></div>
+      </div>
+
+      <!-- PAC + Revenu -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-title">Revenu net estimé</div>
+            <div class="card-value" id="r-revenu"></div>
+            <div class="card-sub">€ par hectare</div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-title">Aides PAC 2024</div>
+            <div class="card-value" id="r-pac-total"></div>
+            <div class="card-sub">€/ha (DPB + Éco + VBC)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Détail PAC -->
+      <div class="card mb-3">
+        <div style="font-size:14px;font-weight:600;margin-bottom:12px">Détail des aides PAC 2024</div>
+        <table class="table table-agro" style="margin:0;font-size:13px">
+          <tbody id="r-pac-detail"></tbody>
+        </table>
+      </div>
+
+      <!-- Bouton PDF -->
+      <div class="text-end">
+        <a id="btn-pdf" href="#" class="btn-vert">
+          📄 Télécharger la simulation Telepac (PDF)
+        </a>
+      </div>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" style="display:none" class="card text-center" style="padding:60px">
+      <div style="font-size:40px;margin-bottom:16px">⏳</div>
+      <p style="color:var(--texte-muted)">Analyse en cours...</p>
+    </div>
+
+    <!-- Erreur -->
+    <div id="error-box" style="display:none" class="alert alert-danger"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const NOMS = {
+  ble_tendre:'Blé tendre', colza:'Colza', betterave:'Betterave sucrière',
+  orge:'Orge', mais_grain:'Maïs grain', pomme_de_terre:'Pomme de terre'
+};
+const SOURCES_PAC = {
+  dpb:'data.gouv.fr PAC 2022 — onglet Hypothèses',
+  eco:'Arrêté JO 01/10/2024',
+  vbc:'SMAG / Telepac notice 2024'
+};
+
+document.getElementById('formPred').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn  = document.getElementById('btnPredict');
+
+  // UI loading
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('result').style.display      = 'none';
+  document.getElementById('error-box').style.display   = 'none';
+  document.getElementById('loader').style.display      = 'block';
+  btn.disabled = true;
+  btn.textContent = '⏳ Analyse...';
+
+  // Collect form data
+  const data = {};
+  new FormData(form).forEach((v, k) => {
+    data[k] = isNaN(v) || v === '' ? v : Number(v);
+  });
+  delete data['csrf_token'];
+
+  try {
+    const resp = await fetch('/api/predict', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrf_token]').value
+      },
+      body: JSON.stringify(data)
+    });
+    const r = await resp.json();
+
+    if (!resp.ok || r.error) throw new Error(r.error || 'Erreur serveur');
+
+    // Afficher résultats
+    document.getElementById('loader').style.display  = 'none';
+    document.getElementById('result').style.display  = 'block';
+
+    const top1 = r.top4[0];
+    document.getElementById('r-culture').textContent    = NOMS[top1.culture] || top1.culture;
+    document.getElementById('r-score-badge').textContent = top1.score_pct + '%';
+    document.getElementById('r-confiance').textContent  = `Confiance : ${top1.score_pct}%`;
+    document.getElementById('r-revenu').textContent     = r.revenu_ha.toLocaleString('fr-FR') + ' €';
+    document.getElementById('r-pac-total').textContent  = r.pac_total + ' €';
+
+    // Top 4
+    const top4Html = r.top4.map((c, i) => `
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px">
+          <span style="font-weight:${i===0?'600':'400'};color:${i===0?'var(--vert)':'var(--texte)'}">
+            ${i===0?'⭐ ':''}${NOMS[c.culture]||c.culture}
+          </span>
+          <span style="font-weight:${i===0?'600':'400'}">${c.score_pct}%</span>
+        </div>
+        <div class="score-bar">
+          <div class="score-bar-fill" style="width:${c.score_pct}%;
+               background:${i===0?'var(--vert)':'var(--bord)'}"></div>
+        </div>
+      </div>`).join('');
+    document.getElementById('r-top4').innerHTML = top4Html;
+
+    // Détail PAC
+    const pac = r.pac_detail;
+    const pacRows = [
+      ['DPB — Aide de Base au Revenu', pac.dpb||118, SOURCES_PAC.dpb],
+      ['Éco-régime', pac.eco||62, SOURCES_PAC.eco],
+      ['VBC — Aide couplée végétale', pac.vbc||0, SOURCES_PAC.vbc],
+    ].map(([lib, val, src]) => `
+      <tr>
+        <td style="font-weight:500">${lib}</td>
+        <td style="text-align:center;color:var(--vert);font-weight:600">${val} €/ha</td>
+        <td style="font-size:11px;color:var(--texte-muted)">${src}</td>
+      </tr>`).join('');
+    document.getElementById('r-pac-detail').innerHTML = pacRows +
+      `<tr style="border-top:2px solid var(--bord)">
+        <td style="font-weight:700">Total PAC</td>
+        <td style="text-align:center;color:var(--vert);font-weight:700">${r.pac_total} €/ha</td>
+        <td></td>
+      </tr>`;
+
+    // Lien PDF
+    if (r.prediction_id) {
+      document.getElementById('btn-pdf').href = `/api/pdf/${r.prediction_id}`;
+    }
+
+  } catch(err) {
+    document.getElementById('loader').style.display    = 'none';
+    document.getElementById('error-box').style.display = 'block';
+    document.getElementById('error-box').textContent   = '⚠ ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔮 Lancer la prédiction';
+  }
+});
+</script>
+{% endblock %}

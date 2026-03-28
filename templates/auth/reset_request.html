@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Mot de passe oublié — AgroOptimize HdF{% endblock %}
+{% block auth_content %}
+<style>
+.auth-wrap { min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#f7f8f6 0%,#e8f5e9 100%);padding:40px 16px; }
+.auth-card { background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.12);
+  width:100%;max-width:420px;overflow:hidden; }
+.auth-header { background:var(--vert);padding:28px 32px 20px;text-align:center; }
+.auth-header h1 { font-family:'DM Serif Display',serif;font-size:24px;color:#fff;margin-bottom:4px; }
+.auth-header p { color:rgba(255,255,255,.7);font-size:13px; }
+.auth-body { padding:28px 32px; }
+.auth-footer { text-align:center;padding:14px 32px 22px;border-top:1px solid var(--bord);
+  font-size:13px;color:var(--texte-muted); }
+.auth-footer a { color:var(--vert);text-decoration:none;font-weight:500; }
+</style>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>🌾 AgroOptimize</h1>
+      <p>Réinitialisation du mot de passe</p>
+    </div>
+    <div class="auth-body">
+      <p style="font-size:14px;color:var(--texte-muted);margin-bottom:20px">
+        Entrez votre email. Si un compte existe, un lien valable <strong>30 minutes</strong> vous sera envoyé.
+      </p>
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="mb-4">
+          <label class="form-label">Email</label>
+          {{ form.email(class="form-control",placeholder="votre@email.fr") }}
+        </div>
+        <button type="submit" class="btn-vert w-100 justify-content-center">
+          Envoyer le lien
+        </button>
+      </form>
+    </div>
+    <div class="auth-footer">
+      <a href="{{ url_for('login') }}">← Retour à la connexion</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

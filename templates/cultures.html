@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Cultures HdF — AgroOptimize HdF{% endblock %}
+{% block page_title %}Cultures des Hauts-de-France{% endblock %}
+
+{% block content %}
+{% set infos = {
+  'ble_tendre':     {'emoji':'🌾','desc':'Culture dominante HdF (38.9% des parcelles). Sols limoneux profonds. Rotation classique après colza.','rdt':'7.54 t/ha'},
+  'colza':          {'emoji':'🌼','desc':'2ème culture HdF. Excellente tête de rotation pour le blé. Semis août-septembre.','rdt':'3.39 t/ha'},
+  'betterave':      {'emoji':'🫀','desc':'Filière sucrière Nord-Picardie. Rendements parmi les meilleurs d\'Europe en HdF.','rdt':'81.4 t/ha'},
+  'orge':           {'emoji':'🌿','desc':'Orge d\'hiver principalement. Précédent après blé possible. Débouchés brassicoles.','rdt':'6.70 t/ha'},
+  'mais_grain':     {'emoji':'🌽','desc':'Développement récent en HdF grâce aux variétés précoces. Sols sablo-limoneux favorables.','rdt':'9.44 t/ha'},
+  'pomme_de_terre': {'emoji':'🥔','desc':'Spécialité du Nord et du Pas-de-Calais. Industrie fécule et chips. Budget élevé requis.','rdt':'44.0 t/ha'},
+} %}
+
+<div class="row g-3">
+  {% for c, pac in pac_aides.items() %}
+  {% set info = infos.get(c, {}) %}
+  <div class="col-md-6">
+    <div class="card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:32px">{{ info.get('emoji','🌱') }}</span>
+          <div>
+            <div style="font-size:16px;font-weight:600">{{ noms.get(c,c) }}</div>
+            <div style="font-size:12px;color:var(--texte-muted)">
+              Rendement HdF : {{ info.get('rdt','—') }}
+            </div>
+          </div>
+        </div>
+        <span class="badge-culture" style="font-size:13px;font-weight:700">
+          {{ pac.dpb + pac.eco + pac.vbc }} €/ha PAC
+        </span>
+      </div>
+
+      <p style="font-size:13px;color:var(--texte-muted);margin-bottom:14px">
+        {{ info.get('desc','') }}
+      </p>
+
+      <div style="display:flex;gap:8px">
+        <div style="flex:1;background:var(--vert-pale);border-radius:8px;padding:8px;text-align:center">
+          <div style="font-size:10px;color:var(--vert);font-weight:600;text-transform:uppercase">DPB</div>
+          <div style="font-size:15px;font-weight:700;color:var(--vert)">{{ pac.dpb }}€</div>
+        </div>
+        <div style="flex:1;background:var(--vert-pale);border-radius:8px;padding:8px;text-align:center">
+          <div style="font-size:10px;color:var(--vert);font-weight:600;text-transform:uppercase">Éco</div>
+          <div style="font-size:15px;font-weight:700;color:var(--vert)">{{ pac.eco }}€</div>
+        </div>
+        <div style="flex:1;background:{% if pac.vbc > 0 %}var(--vert-pale){% else %}var(--fond){% endif %};
+                    border-radius:8px;padding:8px;text-align:center">
+          <div style="font-size:10px;color:{% if pac.vbc > 0 %}var(--vert){% else %}var(--texte-muted){% endif %};
+                      font-weight:600;text-transform:uppercase">VBC</div>
+          <div style="font-size:15px;font-weight:700;
+                      color:{% if pac.vbc > 0 %}var(--vert){% else %}var(--texte-muted){% endif %}">
+            {{ pac.vbc }}€
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

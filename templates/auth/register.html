@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Inscription — AgroOptimize HdF{% endblock %}
+
+{% block auth_content %}
+<style>
+.auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f7f8f6 0%, #e8f5e9 100%);
+  padding: 40px 16px;
+}
+.auth-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.12);
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+}
+.auth-header {
+  background: var(--vert);
+  padding: 28px 32px 20px;
+  text-align: center;
+}
+.auth-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.auth-header p { color: rgba(255,255,255,.7); font-size: 13px; }
+.auth-body { padding: 28px 32px; }
+.auth-footer {
+  text-align: center;
+  padding: 14px 32px 22px;
+  border-top: 1px solid var(--bord);
+  font-size: 13px;
+  color: var(--texte-muted);
+}
+.auth-footer a { color: var(--vert); text-decoration: none; font-weight: 500; }
+.pwd-rules {
+  background: var(--vert-pale);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--vert);
+  margin-top: 6px;
+}
+.pwd-rules li { margin-bottom: 2px; }
+</style>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>🌾 AgroOptimize</h1>
+      <p>Créez votre espace agriculteur HdF</p>
+    </div>
+
+    <div class="auth-body">
+      <form method="POST" action="{{ url_for('register') }}" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="row g-3 mb-3">
+          <div class="col">
+            <label class="form-label">Prénom</label>
+            {{ form.prenom(class="form-control" + (" is-invalid" if form.prenom.errors else ""),
+                           placeholder="Jean") }}
+            {% for e in form.prenom.errors %}
+              <div class="invalid-feedback">{{ e }}</div>
+            {% endfor %}
+          </div>
+          <div class="col">
+            <label class="form-label">Nom</label>
+            {{ form.nom(class="form-control" + (" is-invalid" if form.nom.errors else ""),
+                        placeholder="Dupont") }}
+            {% for e in form.nom.errors %}
+              <div class="invalid-feedback">{{ e }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Email professionnel</label>
+          {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""),
+                        placeholder="jean.dupont@exploitation.fr",
+                        autocomplete="email") }}
+          {% for e in form.email.errors %}
+            <div class="invalid-feedback">{{ e }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Mot de passe</label>
+          {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""),
+                           placeholder="••••••••",
+                           autocomplete="new-password") }}
+          {% for e in form.password.errors %}
+            <div class="invalid-feedback">{{ e }}</div>
+          {% endfor %}
+          <div class="pwd-rules">
+            <ul style="list-style:none;padding:0;margin:0">
+              <li>✓ Au moins 8 caractères</li>
+              <li>✓ Une majuscule</li>
+              <li>✓ Un chiffre</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Confirmer le mot de passe</label>
+          {{ form.confirm(class="form-control" + (" is-invalid" if form.confirm.errors else ""),
+                          placeholder="••••••••",
+                          autocomplete="new-password") }}
+          {% for e in form.confirm.errors %}
+            <div class="invalid-feedback">{{ e }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-4" style="background:#f9f9f9;border-radius:8px;padding:12px;font-size:12px;color:var(--texte-muted)">
+          🔒 Vos données sont chiffrées et ne sont jamais partagées avec des tiers.
+          Un email de confirmation vous sera envoyé.
+        </div>
+
+        <button type="submit" class="btn-vert w-100 justify-content-center">
+          Créer mon compte
+        </button>
+      </form>
+    </div>
+
+    <div class="auth-footer">
+      Déjà inscrit ? <a href="{{ url_for('login') }}">Se connecter</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

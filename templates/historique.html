@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Historique — AgroOptimize HdF{% endblock %}
+{% block page_title %}Historique des prédictions{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <h3 style="font-size:16px;font-weight:600">
+      Toutes vos prédictions ({{ predictions|length }})
+    </h3>
+    <a href="{{ url_for('prediction') }}" class="btn-vert">
+      + Nouvelle prédiction
+    </a>
+  </div>
+
+  {% if predictions %}
+  <div class="table-responsive">
+    <table class="table table-agro">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Culture</th>
+          <th>Score</th>
+          <th>Revenu estimé</th>
+          <th>Sol</th>
+          <th>Zone</th>
+          <th>Surface</th>
+          <th>Date</th>
+          <th>PDF</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in predictions %}
+        <tr>
+          <td style="color:var(--texte-muted);font-size:12px">{{ p.id }}</td>
+          <td><span class="badge-culture">{{ p.culture_top1.replace('_',' ').title() }}</span></td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="score-bar" style="width:60px">
+                <div class="score-bar-fill" style="width:{{ p.score_top1 }}%"></div>
+              </div>
+              <span style="font-size:13px">{{ "%.1f"|format(p.score_top1) }}%</span>
+            </div>
+          </td>
+          <td style="font-weight:500;color:var(--vert)">
+            {{ "{:,.0f}".format(p.revenu_estime) }} €/ha
+          </td>
+          <td style="font-size:13px;color:var(--texte-muted)">
+            {{ p.sol_type.replace('_',' ') if p.sol_type else '—' }}
+          </td>
+          <td style="font-size:13px;color:var(--texte-muted)">
+            {{ p.zone_geo.replace('_',' ') if p.zone_geo else '—' }}
+          </td>
+          <td style="font-size:13px">
+            {{ p.surf_parc }} ha
+          </td>
+          <td style="font-size:13px;color:var(--texte-muted)">
+            {{ p.created_at.strftime('%d/%m/%Y %H:%M') }}
+          </td>
+          <td>
+            <a href="{{ url_for('generate_pdf', pred_id=p.id) }}"
+               class="btn-outline" style="font-size:12px;padding:4px 12px">
+              📄 PDF
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="text-center" style="padding:40px">
+    <div style="font-size:48px;margin-bottom:12px">📋</div>
+    <p style="color:var(--texte-muted)">Aucune prédiction enregistrée.</p>
+    <a href="{{ url_for('prediction') }}" class="btn-vert mt-3">Faire une prédiction</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

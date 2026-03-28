@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Connexion — AgroOptimize HdF{% endblock %}
+
+{% block auth_content %}
+<style>
+.auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f7f8f6 0%, #e8f5e9 100%);
+  padding: 40px 16px;
+}
+.auth-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.12);
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+}
+.auth-header {
+  background: var(--vert);
+  padding: 32px 32px 24px;
+  text-align: center;
+}
+.auth-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.auth-header p { color: rgba(255,255,255,.7); font-size: 13px; }
+.auth-body { padding: 32px; }
+.auth-body h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--texte);
+}
+.auth-body .subtitle {
+  font-size: 13px;
+  color: var(--texte-muted);
+  margin-bottom: 24px;
+}
+.auth-footer {
+  text-align: center;
+  padding: 16px 32px 24px;
+  border-top: 1px solid var(--bord);
+  font-size: 13px;
+  color: var(--texte-muted);
+}
+.auth-footer a { color: var(--vert); text-decoration: none; font-weight: 500; }
+</style>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>🌾 AgroOptimize</h1>
+      <p>Hauts-de-France — Recommandation de cultures</p>
+    </div>
+
+    <div class="auth-body">
+      <h2>Connexion</h2>
+      <p class="subtitle">Accédez à votre espace agriculteur</p>
+
+      <form method="POST" action="{{ url_for('login') }}" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""),
+                        placeholder="votre@email.fr", autocomplete="email") }}
+          {% for e in form.email.errors %}
+            <div class="invalid-feedback">{{ e }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" style="display:flex;justify-content:space-between">
+            Mot de passe
+            <a href="{{ url_for('reset_request') }}" style="font-size:12px;color:var(--vert)">
+              Mot de passe oublié ?
+            </a>
+          </label>
+          {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""),
+                           placeholder="••••••••", autocomplete="current-password") }}
+          {% for e in form.password.errors %}
+            <div class="invalid-feedback">{{ e }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="mb-4 d-flex align-items-center gap-2">
+          {{ form.remember(class="form-check-input") }}
+          <label class="form-check-label" style="font-size:13px">Se souvenir de moi</label>
+        </div>
+
+        <button type="submit" class="btn-vert w-100 justify-content-center">
+          Se connecter
+        </button>
+      </form>
+    </div>
+
+    <div class="auth-footer">
+      Pas encore de compte ?
+      <a href="{{ url_for('register') }}">S'inscrire</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

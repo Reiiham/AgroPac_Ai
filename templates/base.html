@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AgroOptimize HdF — Recommandation de cultures agricoles">
+<title>{% block title %}AgroOptimize HdF{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+:root {
+  --vert:        #1a5c1a;
+  --vert-clair:  #2d8a2d;
+  --vert-pale:   #e8f5e9;
+  --vert-mid:    #c8e6c9;
+  --accent:      #f59e0b;
+  --danger:      #dc3545;
+  --texte:       #1a1a1a;
+  --texte-muted: #6b7280;
+  --fond:        #f7f8f6;
+  --blanc:       #ffffff;
+  --bord:        #e5e7eb;
+  --sidebar-w:   260px;
+  --header-h:    64px;
+  --radius:      10px;
+  --shadow:      0 2px 12px rgba(0,0,0,.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--texte);
+  background: var(--fond);
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--vert);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+}
+.sidebar-brand {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+.sidebar-brand h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  color: #fff;
+  line-height: 1.2;
+}
+.sidebar-brand span {
+  font-size: 11px;
+  color: rgba(255,255,255,.6);
+  font-weight: 400;
+  letter-spacing: .5px;
+}
+.sidebar-user {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+.sidebar-user .avatar {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,.2);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #fff;
+  font-size: 14px;
+  margin-right: 10px;
+}
+.sidebar-user .name {
+  font-size: 13px;
+  color: #fff;
+  font-weight: 500;
+}
+.sidebar-user .role {
+  font-size: 11px;
+  color: rgba(255,255,255,.5);
+}
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 0;
+}
+.sidebar-nav .nav-section {
+  padding: 8px 20px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,.4);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  color: rgba(255,255,255,.8);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  transition: all .15s;
+  border-left: 3px solid transparent;
+}
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+  background: rgba(255,255,255,.1);
+  color: #fff;
+  border-left-color: var(--accent);
+}
+.sidebar-nav a .icon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+.sidebar-footer a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255,255,255,.6);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color .15s;
+}
+.sidebar-footer a:hover { color: #fff; }
+
+/* ── MAIN ── */
+.main-wrap {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.topbar {
+  height: var(--header-h);
+  background: var(--blanc);
+  border-bottom: 1px solid var(--bord);
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.topbar-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--texte);
+  flex: 1;
+}
+.topbar-badge {
+  background: var(--vert-pale);
+  color: var(--vert);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.page-content {
+  flex: 1;
+  padding: 32px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--blanc);
+  border: 1px solid var(--bord);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--texte-muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 8px;
+}
+.card-value {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--vert);
+  line-height: 1;
+}
+.card-sub {
+  font-size: 12px;
+  color: var(--texte-muted);
+  margin-top: 4px;
+}
+
+/* ── ALERTES ── */
+.alert { border-radius: var(--radius); font-size: 14px; }
+.alert-success { background: var(--vert-pale); border-color: var(--vert-mid); color: var(--vert); }
+.alert-danger  { background: #fdecea; border-color: #f5c6cb; color: #721c24; }
+.alert-warning { background: #fff8e1; border-color: #ffe082; color: #7c4700; }
+.alert-info    { background: #e3f2fd; border-color: #90caf9; color: #0d47a1; }
+
+/* ── BOUTONS ── */
+.btn-vert {
+  background: var(--vert);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-vert:hover { background: var(--vert-clair); color: #fff; }
+.btn-outline {
+  background: transparent;
+  color: var(--vert);
+  border: 1.5px solid var(--vert);
+  border-radius: var(--radius);
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-outline:hover { background: var(--vert-pale); }
+
+/* ── FORMULAIRES ── */
+.form-label { font-size: 13px; font-weight: 500; color: var(--texte); margin-bottom: 4px; }
+.form-control, .form-select {
+  border: 1.5px solid var(--bord);
+  border-radius: 8px;
+  font-size: 14px;
+  padding: 9px 14px;
+  transition: border-color .15s;
+  background: var(--blanc);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--vert);
+  box-shadow: 0 0 0 3px rgba(26,92,26,.12);
+  outline: none;
+}
+.is-invalid { border-color: var(--danger) !important; }
+.invalid-feedback { font-size: 12px; color: var(--danger); }
+
+/* ── TABLE ── */
+.table-agro thead th {
+  background: var(--vert-pale);
+  color: var(--vert);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  border: none;
+}
+.table-agro tbody td { font-size: 14px; vertical-align: middle; }
+
+/* ── BADGE CULTURE ── */
+.badge-culture {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--vert-pale);
+  color: var(--vert);
+}
+
+/* ── PROGRESS BAR ── */
+.score-bar {
+  height: 8px;
+  background: var(--bord);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.score-bar-fill {
+  height: 100%;
+  background: var(--vert);
+  border-radius: 4px;
+  transition: width .6s ease;
+}
+</style>
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% if current_user.is_authenticated %}
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <h1>🌾 AgroOptimize</h1>
+    <span>Hauts-de-France</span>
+  </div>
+
+ <div class="sidebar-user">
+  <a href="{{ url_for('profil') }}" style="text-decoration:none;display:flex;align-items:center;
+     transition:opacity .15s" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
+    <div class="avatar">{{ current_user.prenom[0] }}{{ current_user.nom[0] }}</div>
+    <div>
+      <div class="name">{{ current_user.prenom }} {{ current_user.nom }}</div>
+      <div class="role">Mon profil</div>
+    </div>
+  </a>
+</div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">Navigation</div>
+    <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' }}">
+      <span class="icon">🏠</span> Accueil
+    </a>
+    <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint == 'dashboard' }}">
+      <span class="icon">📊</span> Dashboard
+    </a>
+    <a href="{{ url_for('prediction') }}" class="{{ 'active' if request.endpoint == 'prediction' }}">
+      <span class="icon">🔮</span> Prédiction
+    </a>
+    <a href="{{ url_for('cultures') }}" class="{{ 'active' if request.endpoint == 'cultures' }}">
+      <span class="icon">🌱</span> Cultures HdF
+    </a>
+    <a href="{{ url_for('historique') }}" class="{{ 'active' if request.endpoint == 'historique' }}">
+      <span class="icon">📋</span> Historique
+    </a>
+  </nav>
+  
+
+  <div class="sidebar-footer">
+    <a href="{{ url_for('logout') }}">
+      <span>🚪</span> Déconnexion
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main-wrap">
+  <header class="topbar">
+    <div class="topbar-title">{% block page_title %}{% endblock %}</div>
+    <span class="topbar-badge">HdF 2024</span>
+  </header>
+
+  <main class="page-content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }} alert-dismissible fade show mb-3" role="alert">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+{% else %}
+<!-- Pages auth : pas de sidebar -->
+<main>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="alert alert-{{ cat }} alert-dismissible fade show m-3" role="alert">
+        {{ msg }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    {% endfor %}
+  {% endwith %}
+  {% block auth_content %}{% endblock %}
+</main>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

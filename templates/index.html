@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Accueil — AgroOptimize HdF{% endblock %}
+{% block page_title %}Accueil{% endblock %}
+
+{% block content %}
+<!-- KPIs -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card text-center">
+      <div class="card-title">Modèle</div>
+      <div class="card-value">{{ metrics.get('meilleur_modele', 'XGBoost') }}</div>
+      <div class="card-sub">Meilleur classificateur</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center">
+      <div class="card-title">Accuracy</div>
+      <div class="card-value">{{ "%.1f"|format(metrics.get('accuracy_best', 0.57)*100) }}%</div>
+      <div class="card-sub">6 cultures HdF</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center">
+      <div class="card-title">Parcelles</div>
+      <div class="card-value">280K</div>
+      <div class="card-sub">RPG IGN 2024</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center">
+      <div class="card-title">Vos prédictions</div>
+      <div class="card-value">{{ predictions|length }}</div>
+      <div class="card-sub">Ce mois-ci</div>
+    </div>
+  </div>
+</div>
+
+<!-- Bienvenue + action rapide -->
+<div class="row g-3 mb-4">
+  <div class="col-md-8">
+    <div class="card">
+      <h2 style="font-size:18px;font-weight:600;margin-bottom:8px">
+        Bonjour, {{ current_user.prenom }} 👋
+      </h2>
+      <p style="color:var(--texte-muted);font-size:14px;margin-bottom:20px">
+        AgroOptimize HdF vous recommande la culture optimale pour votre parcelle
+        à partir de données officielles IGN, INRAE, Agreste et PAC 2024.
+        La météo réelle Open-Meteo 2023 est intégrée pour 100% des parcelles.
+      </p>
+      <a href="{{ url_for('prediction') }}" class="btn-vert">
+        🔮 Lancer une prédiction
+      </a>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card" style="background:var(--vert);color:#fff;height:100%">
+      <div style="font-size:12px;font-weight:600;text-transform:uppercase;
+                  letter-spacing:.5px;opacity:.7;margin-bottom:8px">Sources officielles</div>
+      <ul style="font-size:13px;list-style:none;padding:0;line-height:2">
+        <li>✓ RPG IGN 2024 &amp; 2023</li>
+        <li>✓ SGDBE INRAE sols</li>
+        <li>✓ Agreste SAA 2023-2024</li>
+        <li>✓ PAC 2024 sourcée</li>
+        <li>✓ Météo Open-Meteo 2023</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Dernières prédictions -->
+{% if predictions %}
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <h3 style="font-size:16px;font-weight:600">Dernières prédictions</h3>
+    <a href="{{ url_for('historique') }}" class="btn-outline" style="font-size:13px;padding:6px 14px">
+      Voir tout
+    </a>
+  </div>
+  <table class="table table-agro" style="margin:0">
+    <thead>
+      <tr>
+        <th>Culture recommandée</th>
+        <th>Score</th>
+        <th>Revenu estimé</th>
+        <th>Zone</th>
+        <th>Date</th>
+        <th>PDF</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in predictions %}
+      <tr>
+        <td><span class="badge-culture">{{ p.culture_top1.replace('_',' ').title() }}</span></td>
+        <td>{{ "%.1f"|format(p.score_top1) }}%</td>
+        <td>{{ "{:,.0f}".format(p.revenu_estime) }} €/ha</td>
+        <td style="font-size:13px;color:var(--texte-muted)">
+          {{ p.zone_geo.replace('_',' ') if p.zone_geo else '—' }}
+        </td>
+        <td style="font-size:13px;color:var(--texte-muted)">
+          {{ p.created_at.strftime('%d/%m/%Y') }}
+        </td>
+        <td>
+          <a href="{{ url_for('generate_pdf', pred_id=p.id) }}"
+             class="btn-outline" style="font-size:12px;padding:4px 12px">
+            📄 PDF
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card text-center" style="padding:40px">
+  <div style="font-size:48px;margin-bottom:12px">🌱</div>
+  <h3 style="font-size:16px;font-weight:600;margin-bottom:8px">Aucune prédiction encore</h3>
+  <p style="color:var(--texte-muted);font-size:14px;margin-bottom:20px">
+    Faites votre première prédiction pour obtenir une recommandation de culture.
+  </p>
+  <a href="{{ url_for('prediction') }}" class="btn-vert">Commencer</a>
+</div>
+{% endif %}
+{% endblock %}
