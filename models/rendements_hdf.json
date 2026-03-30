@@ -1,0 +1,44 @@
+{
+  "ble_tendre": {
+    "rdt_national_moy": 6.73,
+    "coeff_hdf": 1.12,
+    "rdt_hdf": 7.54,
+    "source": "Agreste SAA 2023-2024, France metropolitaine"
+  },
+  "colza": {
+    "rdt_national_moy": 3.08,
+    "coeff_hdf": 1.1,
+    "rdt_hdf": 3.39,
+    "source": "Agreste SAA 2023-2024, France metropolitaine"
+  },
+  "betterave": {
+    "rdt_national_moy": 79.77,
+    "coeff_hdf": 1.02,
+    "rdt_hdf": 81.37,
+    "source": "Agreste SAA 2023-2024, France metropolitaine"
+  },
+  "orge": {
+    "rdt_national_moy": 6.09,
+    "coeff_hdf": 1.1,
+    "rdt_hdf": 6.7,
+    "source": "Agreste SAA 2023-2024, France metropolitaine"
+  },
+  "mais_grain": {
+    "rdt_national_moy": 9.94,
+    "coeff_hdf": 0.95,
+    "rdt_hdf": 9.44,
+    "source": "Agreste SAA 2023-2024, France metropolitaine"
+  },
+  "lin_fibre": {
+    "rdt_national_moy": 5.31,
+    "coeff_hdf": 1.15,
+    "rdt_hdf": 6.11,
+    "source": "Agreste SAA 2023-2024, France metropolitaine"
+  },
+  "pois_proteine": {
+    "rdt_national_moy": 3.37,
+    "coeff_hdf": 1.08,
+    "rdt_hdf": 3.64,
+    "source": "Agreste SAA 2023-2024, France metropolitaine"
+  }
+}

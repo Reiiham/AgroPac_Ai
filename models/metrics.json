@@ -1,0 +1,34 @@
+{
+  "meilleur_modele": "XGBoost",
+  "accuracy_rf": 0.5576,
+  "accuracy_xgboost": 0.5733,
+  "accuracy_lightgbm": 0.5576,
+  "accuracy_best": 0.5733,
+  "mae_revenu_eur_ha": 605.83,
+  "r2_revenu": 0.3264,
+  "n_train": 224790,
+  "n_test": 56198,
+  "n_features": 43,
+  "classes": [
+    "betterave",
+    "ble_tendre",
+    "colza",
+    "mais_grain",
+    "orge",
+    "pomme_de_terre"
+  ],
+  "sources_pac": {
+    "dpb_118": "data.gouv.fr — Aides PAC versées 2022, onglet Hypotheses",
+    "eco_62": "Arrêté 25/09/2024 publié JO 01/10/2024 — niveau supérieur",
+    "eco_45_pdt": "Arrêté 25/09/2024 publié JO 01/10/2024 — niveau de base",
+    "vbc_pois_104": "SMAG — PAC 2023-2027 guide complet, smag.tech",
+    "vbc_pdt_130": "Telepac — notice aides découplées PAC 2024",
+    "sie_supprime": "Non subventionné depuis réforme PAC 2023 (BCAE obligatoire)"
+  },
+  "sources_donnees": {
+    "cultures": "RPG IGN 2024 — geoservices.ign.fr/rpg",
+    "precedent": "RPG IGN 2023 — 66.7% parcelles avec précédent réel",
+    "sol": "SGDBE INRAE 1/1 000 000 — data.gouv.fr (100% parcelles)",
+    "rendements": "Agreste SAA 2023-2024 — agreste.agriculture.gouv.fr"
+  }
+}

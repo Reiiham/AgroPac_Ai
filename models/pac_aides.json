@@ -1,0 +1,32 @@
+{
+  "ble_tendre": {
+    "dpb": 118,
+    "eco": 62,
+    "vbc": 0
+  },
+  "colza": {
+    "dpb": 118,
+    "eco": 62,
+    "vbc": 0
+  },
+  "betterave": {
+    "dpb": 118,
+    "eco": 62,
+    "vbc": 0
+  },
+  "orge": {
+    "dpb": 118,
+    "eco": 62,
+    "vbc": 0
+  },
+  "mais_grain": {
+    "dpb": 118,
+    "eco": 62,
+    "vbc": 0
+  },
+  "pomme_de_terre": {
+    "dpb": 118,
+    "eco": 45,
+    "vbc": 130
+  }
+}
