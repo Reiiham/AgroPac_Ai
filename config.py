@@ -26,7 +26,7 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = ('AgroOptimize HdF', os.environ.get('MAIL_USERNAME'))
+    MAIL_DEFAULT_SENDER = ('AgroPac AI HdF', os.environ.get('MAIL_USERNAME'))
 
     RATELIMIT_DEFAULT    = '200 per day;50 per hour'
     RATELIMIT_STORAGE_URL = 'memory://'

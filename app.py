@@ -565,7 +565,7 @@ def generate_pdf(pred_id):
     elements = []
 
     # ── En-tête ──
-    elements.append(Paragraph('🌾 AgroOptimize HdF', style_titre))
+    elements.append(Paragraph('🌾 AgroPac AI HdF', style_titre))
     elements.append(Paragraph(
         'Simulation de déclaration PAC — Document non officiel',
         style_sous))
@@ -574,7 +574,7 @@ def generate_pdf(pred_id):
 
     # ── Bandeau avertissement ──
     avert = Table([[Paragraph(
-        '⚠ Ce document est une <b>simulation pédagogique</b> générée par AgroOptimize HdF. '
+        '⚠ Ce document est une <b>simulation pédagogique</b> générée par AgroPac AI HdF. '
         'Il ne remplace pas une déclaration officielle sur Telepac. '
         'Consultez votre DDT ou chambre d\'agriculture pour toute démarche officielle.',
         ParagraphStyle('avert', fontSize=8, textColor=colors.HexColor('#7c4700'))
@@ -613,7 +613,7 @@ def generate_pdf(pred_id):
     # ── Déclaration parcelle ──
     elements.append(Paragraph('2. Déclaration de la parcelle (S2 simplifié)', style_h2))
     elements.append(Paragraph(
-        'Culture recommandée par le modèle AgroOptimize :', style_body))
+        'Culture recommandée par le modèle AgroPac AI :', style_body))
 
     culture_data = [
         ['Code Telepac', 'Libellé culture', 'Surface (ha)', 'Score modèle'],
@@ -724,7 +724,7 @@ def generate_pdf(pred_id):
     elements.append(HRFlowable(width='100%', thickness=1, color=colors.lightgrey))
     elements.append(Spacer(1, 0.2*cm))
     elements.append(Paragraph(
-        f'Document généré par AgroOptimize HdF le {date.today().strftime("%d/%m/%Y")} — '
+        f'Document généré par AgroPac AI HdF le {date.today().strftime("%d/%m/%Y")} — '
         'Pour une déclaration officielle, rendez-vous sur telepac.agriculture.gouv.fr',
         ParagraphStyle('footer', fontSize=7, textColor=colors.grey, alignment=TA_CENTER)
     ))
@@ -742,12 +742,12 @@ def generate_pdf(pred_id):
 def send_confirmation_email(user):
     token = user.get_confirm_token()
     link  = url_for('confirm_email', token=token, _external=True)
-    msg   = Message('Confirmez votre inscription — AgroOptimize HdF',
+    msg   = Message('Confirmez votre inscription — AgroPac AI HdF',
                     recipients=[user.email])
     msg.html = f'''
     <div style="font-family:Arial,sans-serif;max-width:500px;margin:auto">
       <div style="background:#1a5c1a;padding:20px;text-align:center">
-        <h1 style="color:white;margin:0">🌾 AgroOptimize HdF</h1>
+        <h1 style="color:white;margin:0">🌾 AgroPac AI HdF</h1>
       </div>
       <div style="padding:30px;background:#f9f9f9">
         <h2>Bonjour {user.prenom},</h2>
@@ -768,12 +768,12 @@ def send_confirmation_email(user):
 def send_reset_email(user):
     token = user.get_reset_token()
     link  = url_for('reset_password', token=token, _external=True)
-    msg   = Message('Réinitialisation de mot de passe — AgroOptimize HdF',
+    msg   = Message('Réinitialisation de mot de passe — AgroPac AI HdF',
                     recipients=[user.email])
     msg.html = f'''
     <div style="font-family:Arial,sans-serif;max-width:500px;margin:auto">
       <div style="background:#1a5c1a;padding:20px;text-align:center">
-        <h1 style="color:white;margin:0">🌾 AgroOptimize HdF</h1>
+        <h1 style="color:white;margin:0">🌾 AgroPac AI HdF</h1>
       </div>
       <div style="padding:30px;background:#f9f9f9">
         <h2>Réinitialisation de mot de passe</h2>
@@ -799,7 +799,7 @@ if __name__ == '__main__':
         os.makedirs('database', exist_ok=True)
         db.create_all()
     print('=' * 55)
-    print('  AgroOptimize HdF — Flask v2')
+    print('  AgroPac AI HdF — Flask v2')
     print('=' * 55)
     print(f'  Modèles    : {"✓" if models_ok else "✗"}')
     print(f'  URL        : http://localhost:5000')
